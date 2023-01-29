@@ -63,7 +63,9 @@ SteamTarget::SteamTarget()
 int SteamTarget::run()
 {
 
-    // CEFInject::InjectJs(L"Steam Shared Context presented by Valve", L"console.log('FUCK YEAH!')");
+    //auto meh = CEFInject::InjectJs(L"Steam Shared Context presented by Valve", L"1+1;");
+    //spdlog::info("CEFInject::InjectJs: {}", meh.dump(4));
+    //return 1;
 
     auto closeBPM = false;
     auto closeBPMTimer = sf::Clock{};
