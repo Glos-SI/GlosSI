@@ -55,6 +55,9 @@ int SteamTarget::run()
     // spdlog::info("CEFInject::InjectJs: {}", meh.dump(4));
     // return 1;
 
+    auto steam_tweaks = CEFInject::SteamTweaks();
+    steam_tweaks.setAutoInject(true);
+
     if (!overlay_.expired())
         overlay_.lock()->setEnabled(false);
 
@@ -115,6 +118,8 @@ int SteamTarget::run()
     server_.run();
 
     bool delayed_full_init_1_frame = false;
+    sf::Clock frame_time_clock;
+
     while (run_) {
         if (!fully_initialized_ && can_fully_initialize_ && delayed_full_init_1_frame) {
             init_FuckingRenameMe();
@@ -128,6 +133,9 @@ int SteamTarget::run()
         detector_.update();
         overlayHotkeyWorkaround();
         window_.update();
+
+        steam_tweaks.update(frame_time_clock.getElapsedTime().asSeconds());
+
 
         // Wait on shutdown; User might get confused if window closes to fast if anything with launchApp get's borked.
         if (delayed_shutdown_) {
@@ -144,7 +152,9 @@ int SteamTarget::run()
             efc();
         }
         end_frame_callbacks.clear();
+        frame_time_clock.restart();
     }
+    steam_tweaks.uninstallTweaks();
     tray->exit();
 
     server_.stop();
@@ -155,6 +165,7 @@ int SteamTarget::run()
 #endif
         launcher_.close();
     }
+    
     return 0;
 }
 
